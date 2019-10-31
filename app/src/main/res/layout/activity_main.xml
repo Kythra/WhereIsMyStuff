@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <TableLayout
+        android:id="@+id/table_db"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="160dp"
+        android:layout_marginBottom="64dp"
+        android:stretchColumns="0,1,2,3,4"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="-16dp">
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/id"
+                android:layout_column="0"
+                android:padding="6dip"
+                android:text="ID" />
+
+            <TextView
+                android:id="@+id/what"
+                android:layout_column="1"
+                android:padding="6dip"
+                android:text="What" />
+
+            <TextView
+                android:id="@+id/towhom"
+                android:layout_column="2"
+                android:padding="6dip"
+                android:text="To Whom" />
+
+            <TextView
+                android:id="@+id/when"
+                android:layout_column="3"
+                android:padding="6dip"
+                android:text="When" />
+
+            <TextView
+                android:id="@+id/closed"
+                android:layout_column="4"
+                android:padding="6dip"
+                android:text="Returned" />
+
+
+
+
+        </TableRow>
+
+
+        <View
+            android:layout_height="2dip"
+            android:background="#FF909090" />
+
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TableLayout
+                android:id="@+id/table_db_results"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                android:stretchColumns="0,1,2,3,4"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:layout_editor_absoluteX="-16dp">
+
+            </TableLayout>
+
+        </ScrollView>
+
+
+    </TableLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btn_add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:layout_marginRight="24dp"
+        android:layout_marginBottom="24dp"
+        android:clickable="true"
+        android:onClick="onButtonShowPopupWindowClick"
+        app:backgroundTint="#009688"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@android:drawable/ic_input_add" />
+
+    <Switch
+        android:id="@+id/sw_showAll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:layout_marginRight="32dp"
+        android:layout_marginBottom="32dp"
+        android:onClick="onSwitchChanged"
+        android:text="Show all"
+        app:layout_constraintBottom_toTopOf="@+id/table_db"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
