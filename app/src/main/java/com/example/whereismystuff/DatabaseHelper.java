@@ -35,7 +35,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     DatabaseContract.DatabaseEntry.COLUMN_NAME_WHAT + " TEXT," +
                     DatabaseContract.DatabaseEntry.COLUMN_NAME_TOWHOM + " TEXT," +
                     DatabaseContract.DatabaseEntry.COLUMN_NAME_WHEN + " DATETIME," +
-                    DatabaseContract.DatabaseEntry.COLUMN_NAME_CLOSED + " TEXT" +
+                    DatabaseContract.DatabaseEntry.COLUMN_NAME_CLOSED + " TEXT," +
+                    DatabaseContract.DatabaseEntry.COLUMN_NAME_ISMONEY + " BOOLEAN" +
                     ")";
 
     private static final String SQL_DELETE_TABLE =

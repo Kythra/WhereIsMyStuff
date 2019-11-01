@@ -1,21 +1,30 @@
 package com.example.whereismystuff;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.ContentValues;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Point;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.widget.Switch;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity {
     DatabaseHelper dbHelper;
@@ -25,13 +34,45 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         dbHelper = new DatabaseHelper(this);
+  //      dbHelper.onUpgrade(dbHelper.getWritableDatabase(), 1,1);
+        setInitialParams();
         initResultTable();
-//        dbHelper.onUpgrade(dbHelper.getWritableDatabase(), 1,1);
+    }
+
+    private void calculateLendOutMoney() {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String sortOrder =
+                DatabaseContract.DatabaseEntry.COLUMN_NAME_WHEN + " ASC";
+        Cursor cursor = db.query(
+                DatabaseContract.DatabaseEntry.TABLE_NAME,   // The table to query
+                new String[] {DatabaseContract.DatabaseEntry.COLUMN_NAME_WHAT, DatabaseContract.DatabaseEntry.COLUMN_NAME_ISMONEY, DatabaseContract.DatabaseEntry.COLUMN_NAME_CLOSED},           // The array of columns to return (pass null to get all)
+                DatabaseContract.DatabaseEntry.COLUMN_NAME_ISMONEY + "=?" + " AND ( " + DatabaseContract.DatabaseEntry.COLUMN_NAME_CLOSED + "=?)",  // The columns for the WHERE clause
+                new String[] {String.valueOf(0),String.valueOf(0)},          // The values for the WHERE clause
+                null,
+                null,                   // don't group the rows
+                null,                   // don't filter by row groups
+                null               // The sort order
+        );
+        Pattern MY_PATTERN = Pattern.compile("\\D*(\\d*)\\.?\\s?(\\d*\\,?\\d*)\\s*[€|EUR|EURO|eur|euro](\\d*)\\.?\\s?(\\d*\\,?\\d*)\\s*.*");
+        float moneyVal = 0;
+        String foundValue = "";
+        while(cursor.moveToNext()) {
+            Matcher m = MY_PATTERN.matcher(cursor.getString(cursor.getColumnIndexOrThrow(DatabaseContract.DatabaseEntry.COLUMN_NAME_WHAT)));
+            while (m.find()) {
+                foundValue = m.group(1) + m.group(2);
+                if (foundValue.equals("")) foundValue = m.group(3) + m.group(4);
+                moneyVal += Float.parseFloat(foundValue.replace(',', '.'));
+            }
+        }
+        cursor.close();
+        TextView tv = findViewById(R.id.tv_ausstand);
+        foundValue = String.valueOf(moneyVal).replace('.', ',');
+        tv.setText("Ausstand: " + foundValue + " €");
     }
 
 
     private void initResultTable() {
-
+        calculateLendOutMoney();
 
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         String sortOrder =
@@ -62,30 +103,46 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        TableLayout ll = (TableLayout) findViewById(R.id.table_db_results);
+        TableLayout ll = findViewById(R.id.table_db_results);
         ll.removeAllViewsInLayout();
 
-        List itemIds = new ArrayList<>();
+
         while(cursor.moveToNext()) {
 
             final TableRow row= new TableRow(this);
             TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT);
             row.setLayoutParams(lp);
 
+            Resources res = getResources();
+            Display disp = getWindowManager().getDefaultDisplay();
+            Point size = new Point();
+            disp.getSize(size);
+            int intIdWidth = (int) res.getDimension(R.dimen.id_width);
+            int intPadding = (int) res.getDimension(R.dimen.padding);
+            int maxWidth = (size.x -  intIdWidth)/ 4;
+
             TextView tv_id = new TextView(this);
             tv_id.setText(cursor.getString(cursor.getColumnIndexOrThrow(DatabaseContract.DatabaseEntry._ID)));
+            tv_id.setMaxWidth(intIdWidth);
+            tv_id.setPadding(intPadding, 0,0,0);
             row.addView(tv_id);
 
             TextView tv_what = new TextView(this);
             tv_what.setText(cursor.getString(cursor.getColumnIndexOrThrow(DatabaseContract.DatabaseEntry.COLUMN_NAME_WHAT)));
+            tv_what.setMaxWidth(maxWidth);
+            tv_what.setPadding(intPadding, 0,0,0);
             row.addView(tv_what);
 
             TextView tv_towhom = new TextView(this);
             tv_towhom.setText(cursor.getString(cursor.getColumnIndexOrThrow(DatabaseContract.DatabaseEntry.COLUMN_NAME_TOWHOM)));
+            tv_towhom.setMaxWidth(maxWidth);
+            tv_towhom.setPadding(intPadding, 0,0,0);
             row.addView(tv_towhom);
 
             TextView tv_when = new TextView(this);
             tv_when.setText(cursor.getString(cursor.getColumnIndexOrThrow(DatabaseContract.DatabaseEntry.COLUMN_NAME_WHEN)));
+            tv_when.setMaxWidth(maxWidth);
+            tv_when.setPadding(intPadding, 0,0,0);
             row.addView(tv_when);
 
             TextView tv_returned = new TextView(this);
@@ -95,6 +152,8 @@ public class MainActivity extends AppCompatActivity {
             }else {
                 tv_returned.setText(returnedString);
             }
+            tv_returned.setMaxWidth(maxWidth);
+            tv_returned.setPadding(intPadding, 0,0,0);
             row.addView(tv_returned);
 
             ll.addView(row);
@@ -159,9 +218,11 @@ public class MainActivity extends AppCompatActivity {
                             TextView tmpWhen = (TextView) row.getVirtualChildAt(3);
                             tmpWhen.setText(editWhen.getText());
                             EditText  editReturned = popupView.findViewById(R.id.editText_returned);
+                            String returnedString = editReturned.getText().toString();
+                            if (returnedString.equals("---")) returnedString = "0";
                             TextView tmpReturned = (TextView) row.getVirtualChildAt(4);
                             tmpReturned.setText(editReturned.getText());
-                            DatabaseEntry item = new DatabaseEntry(editWhat.getText().toString(), editToWhom.getText().toString(), editWhen.getText().toString(), editReturned.getText().toString());
+                            DatabaseEntry item = new DatabaseEntry(editWhat.getText().toString(), editToWhom.getText().toString(), editWhen.getText().toString(), returnedString );
                             ContentValues values = DatabaseEntry.toContentValues(item);
                             SQLiteDatabase db = dbHelper.getWritableDatabase();
 
@@ -270,7 +331,7 @@ public class MainActivity extends AppCompatActivity {
                 ContentValues values = DatabaseEntry.toContentValues(item);
 
                 // Insert the new row, returning the primary key value of the new row
-                long newRowId = db.insert(DatabaseContract.DatabaseEntry.TABLE_NAME, null, values);
+                db.insert(DatabaseContract.DatabaseEntry.TABLE_NAME, null,values);
 
         //        addToTable(values);
                 initResultTable();
@@ -295,5 +356,23 @@ public class MainActivity extends AppCompatActivity {
 
     public void onSwitchChanged(View view) {
         initResultTable();
+    }
+
+    private void setInitialParams(){
+        Resources res = getResources();
+        Display disp = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        disp.getSize(size);
+        int intIdWidth = (int) res.getDimension(R.dimen.id_width);
+        int intPadding = (int) res.getDimension(R.dimen.padding);
+        int maxWidth = (size.x -  intIdWidth)/ 4;
+
+        TextView tv = findViewById(R.id.what);
+        tv.setWidth(maxWidth);
+
+        tv = findViewById(R.id.towhom);
+        tv.setWidth(maxWidth);
+
+
     }
 }

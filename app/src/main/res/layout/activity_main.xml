@@ -23,7 +23,8 @@
                 android:id="@+id/id"
                 android:layout_column="0"
                 android:padding="6dip"
-                android:text="ID" />
+                android:width="@dimen/id_width"
+                android:text="@string/id_name" />
 
             <TextView
                 android:id="@+id/what"
@@ -105,6 +106,17 @@
         android:text="Show all"
         app:layout_constraintBottom_toTopOf="@+id/table_db"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_ausstand"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="21dp"
+        android:text="Ausstand: 0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

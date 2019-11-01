@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">Where is my stuff</string>
+    <string name="id_name">ID</string>
+    <string-array
+        name="money">
+        <item>€</item>
+        <item>EUR</item>
+        <item>EURO</item>
+        <item>eur</item>
+        <item>euro</item>
+    </string-array>
+    <dimen name="id_width">8dp</dimen>
+    <dimen name="padding">6dp</dimen>
 </resources>

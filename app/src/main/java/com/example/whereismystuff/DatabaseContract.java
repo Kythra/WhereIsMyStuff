@@ -14,6 +14,7 @@ public final class DatabaseContract {
         public static final String COLUMN_NAME_TOWHOM = "towhom";
         public static final String COLUMN_NAME_WHEN = "lendwhen";
         public static final String COLUMN_NAME_CLOSED = "closed";
+        public static final String COLUMN_NAME_ISMONEY = "ismoney";
 
 
     }
