@@ -1,11 +1,14 @@
 package com.example.whereismystuff;
 
+import android.app.SearchManager;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -14,10 +17,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.SearchView;
 import android.widget.Switch;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -35,8 +40,47 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         dbHelper = new DatabaseHelper(this);
   //      dbHelper.onUpgrade(dbHelper.getWritableDatabase(), 1,1);
+
+
         setInitialParams();
         initResultTable();
+    }
+
+
+    private void doMySearch(String query) {
+
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor;
+        Switch sw_showall = findViewById(R.id.sw_showAll);
+        if (sw_showall.isChecked()) {
+            cursor = db.query(
+                    DatabaseContract.DatabaseEntry.TABLE_NAME,   // The table to query
+                    null,          // The array of columns to return (pass null to get all)
+                    " instr(" + DatabaseContract.DatabaseEntry.COLUMN_NAME_WHAT + " , ?) OR instr(" + DatabaseContract.DatabaseEntry.COLUMN_NAME_TOWHOM +
+                            " ,?) OR instr(" + DatabaseContract.DatabaseEntry.COLUMN_NAME_ISMONEY + ",?)" + " OR instr( " + DatabaseContract.DatabaseEntry.COLUMN_NAME_CLOSED + ",?)"
+                            + "OR instr(" + DatabaseContract.DatabaseEntry.COLUMN_NAME_WHEN + ", ?)",  // The columns for the WHERE clause
+                    new String[]{query, query, query, query, query},          // The values for the WHERE clause
+                    null,
+                    null,                   // don't group the rows
+                    null,                   // don't filter by row groups
+                    null               // The sort order
+            );
+        }else {
+            cursor = db.query(
+                    DatabaseContract.DatabaseEntry.TABLE_NAME,   // The table to query
+                    null,          // The array of columns to return (pass null to get all)
+                    DatabaseContract.DatabaseEntry.COLUMN_NAME_CLOSED + "=? AND (" +
+                            " instr(" + DatabaseContract.DatabaseEntry.COLUMN_NAME_WHAT + " , ?) OR instr(" + DatabaseContract.DatabaseEntry.COLUMN_NAME_TOWHOM +
+                            " ,?) OR instr(" + DatabaseContract.DatabaseEntry.COLUMN_NAME_ISMONEY + ",?)" + " OR instr( " + DatabaseContract.DatabaseEntry.COLUMN_NAME_CLOSED + ",?)"
+                            + "OR instr(" + DatabaseContract.DatabaseEntry.COLUMN_NAME_WHEN + ", ?)  )",  // The columns for the WHERE clause
+                    new String[]{String.valueOf(0), query, query, query, query, query},          // The values for the WHERE clause
+                    null,
+                    null,                   // don't group the rows
+                    null,                   // don't filter by row groups
+                    null               // The sort order
+            );
+        }
+        updateTableFromQuery(cursor);
     }
 
     private void calculateLendOutMoney() {
@@ -61,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
             while (m.find()) {
                 foundValue = m.group(1) + m.group(2);
                 if (foundValue.equals("")) foundValue = m.group(3) + m.group(4);
-                moneyVal += Float.parseFloat(foundValue.replace(',', '.'));
+                if (!foundValue.equals("")) moneyVal += Float.parseFloat(foundValue.replace(',', '.'));
             }
         }
         cursor.close();
@@ -103,6 +147,10 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+       updateTableFromQuery(cursor);
+    }
+
+    private void updateTableFromQuery(Cursor cursor) {
         TableLayout ll = findViewById(R.id.table_db_results);
         ll.removeAllViewsInLayout();
 
@@ -123,8 +171,9 @@ public class MainActivity extends AppCompatActivity {
 
             TextView tv_id = new TextView(this);
             tv_id.setText(cursor.getString(cursor.getColumnIndexOrThrow(DatabaseContract.DatabaseEntry._ID)));
-            tv_id.setMaxWidth(intIdWidth);
-            tv_id.setPadding(intPadding, 0,0,0);
+            tv_id.setWidth(intIdWidth);
+            tv_id.setPadding(0, 0,0,0);
+            tv_id.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
             row.addView(tv_id);
 
             TextView tv_what = new TextView(this);
@@ -226,8 +275,8 @@ public class MainActivity extends AppCompatActivity {
                             ContentValues values = DatabaseEntry.toContentValues(item);
                             SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-      //                      Log.d("query"," " + cursorIn.getLong(cursorIn.getColumnIndexOrThrow(DatabaseContract.DatabaseEntry._ID)));
-      //                      Log.d("query"," " + cursor.getString(cursorIn.getColumnIndexOrThrow(DatabaseContract.DatabaseEntry.COLUMN_NAME_WHAT)));
+                            //                      Log.d("query"," " + cursorIn.getLong(cursorIn.getColumnIndexOrThrow(DatabaseContract.DatabaseEntry._ID)));
+                            //                      Log.d("query"," " + cursor.getString(cursorIn.getColumnIndexOrThrow(DatabaseContract.DatabaseEntry.COLUMN_NAME_WHAT)));
 
                             db.update(DatabaseContract.DatabaseEntry.TABLE_NAME, values, "_id="+id, null);
                             db.close();
@@ -268,7 +317,6 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }
-
 
 
     public void onButtonShowPopupWindowClick(View view) {
@@ -355,7 +403,9 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void onSwitchChanged(View view) {
-        initResultTable();
+        final SearchView sv = (SearchView) findViewById(R.id.search);
+        doMySearch(sv.getQuery().toString());
+
     }
 
     private void setInitialParams(){
@@ -374,5 +424,25 @@ public class MainActivity extends AppCompatActivity {
         tv.setWidth(maxWidth);
 
 
+
+        final SearchView sv = (SearchView) findViewById(R.id.search);
+
+        sv.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                doMySearch(query);
+                sv.clearFocus();
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+
+                doMySearch(newText);
+                return true;
+            }
+
+
+        });
     }
 }
