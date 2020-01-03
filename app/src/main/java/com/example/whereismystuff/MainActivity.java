@@ -91,9 +91,11 @@ public class MainActivity extends AppCompatActivity {
                 null,                   // don't filter by row groups
                 null               // The sort order
         );
-        Pattern MY_PATTERN = Pattern.compile("\\D*(\\d*)\\.?\\s?(\\d*,?\\d*)\\s*(?:€|EUR|EURO|eur|euro)(\\d*)\\.?\\s?(\\d*,?\\d*)\\s*.*");
+        // note that the order of the money identifiers is important, substring before string will not work
+        // DO: euro|eur ; DONOT: eur|euro
+        Pattern MY_PATTERN = Pattern.compile("\\D*(\\d*)\\.?\\s?(\\d*,?\\d*)\\s*(?:€|EURO|EUR|euro|eur)\\s*(\\d*)\\.?\\s?(\\d*,?\\d*)\\s*.*");
         float moneyVal = 0;
-        String foundValue = "";
+        String foundValue;
         while(cursor.moveToNext()) {
             Matcher m = MY_PATTERN.matcher(cursor.getString(cursor.getColumnIndexOrThrow(DatabaseContract.DatabaseEntry.COLUMN_NAME_WHAT)));
             while (m.find()) {
@@ -113,8 +115,6 @@ public class MainActivity extends AppCompatActivity {
         calculateLendOutMoney();
 
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        String sortOrder =
-                DatabaseContract.DatabaseEntry.COLUMN_NAME_WHEN + " ASC";
         final Cursor cursor;
         Switch sw_showall = findViewById(R.id.sw_showAll);
         if (sw_showall.isChecked()) {
@@ -212,13 +212,12 @@ public class MainActivity extends AppCompatActivity {
                     // create the popup window
                     int width = LinearLayout.LayoutParams.WRAP_CONTENT;
                     int height = LinearLayout.LayoutParams.WRAP_CONTENT;
-                    boolean focusable = true; // lets taps outside the popup also dismiss it
-                    final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+                    final PopupWindow popupWindow = new PopupWindow(popupView, width, height, true);
 
-                    EditText  editWhat = (EditText) popupView.findViewById(R.id.editTextWhat);
+                    EditText  editWhat = popupView.findViewById(R.id.editTextWhat);
                     TextView tmpWhat = (TextView) row.getChildAt(1);
                     editWhat.setText(tmpWhat.getText());
-                    EditText  editToWhom = (EditText) popupView.findViewById(R.id.editTextWhom);
+                    EditText  editToWhom = popupView.findViewById(R.id.editTextWhom);
                     TextView tmpToWhom = (TextView) row.getVirtualChildAt(2);
                     editToWhom.setText(tmpToWhom.getText());
                     EditText  editWhen = popupView.findViewById(R.id.editText_when);
@@ -243,7 +242,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });*/
 
-                    Button login = (Button) popupView.findViewById(R.id.btn_done);
+                    Button login = popupView.findViewById(R.id.btn_done);
                     login.setOnClickListener(new Button.OnClickListener(){
 
                         @Override
@@ -251,10 +250,10 @@ public class MainActivity extends AppCompatActivity {
                             TextView tmpID = (TextView) row.getChildAt(0);
                             int id = Integer.parseInt(String.valueOf(tmpID.getText()));
 
-                            EditText  editWhat = (EditText) popupView.findViewById(R.id.editTextWhat);
+                            EditText  editWhat = popupView.findViewById(R.id.editTextWhat);
                             TextView tmpWhat = (TextView) row.getChildAt(1);
                             tmpWhat.setText(editWhat.getText());
-                            EditText  editToWhom = (EditText) popupView.findViewById(R.id.editTextWhom);
+                            EditText  editToWhom = popupView.findViewById(R.id.editTextWhom);
                             TextView tmpToWhom = (TextView) row.getVirtualChildAt(2);
                             tmpToWhom.setText(editToWhom.getText());
                             EditText  editWhen = popupView.findViewById(R.id.editText_when);
@@ -282,7 +281,7 @@ public class MainActivity extends AppCompatActivity {
 
                     });
 
-                    Button btnDel = (Button) popupView.findViewById(R.id.btn_del);
+                    Button btnDel = popupView.findViewById(R.id.btn_del);
                     btnDel.setOnClickListener(new Button.OnClickListener() {
 
                         @Override
@@ -297,7 +296,7 @@ public class MainActivity extends AppCompatActivity {
                     });
 
 
-                    Button btnCnl = (Button) popupView.findViewById(R.id.btn_cancel);
+                    Button btnCnl = popupView.findViewById(R.id.btn_cancel);
                     btnCnl.setOnClickListener(new Button.OnClickListener() {
 
                         @Override
@@ -323,8 +322,7 @@ public class MainActivity extends AppCompatActivity {
         // create the popup window
         int width = LinearLayout.LayoutParams.WRAP_CONTENT;
         int height = LinearLayout.LayoutParams.WRAP_CONTENT;
-        boolean focusable = true; // lets taps outside the popup also dismiss it
-        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, true);
 
         // show the popup window
         // which view you pass in doesn't matter, it is only used for the window tolken
@@ -349,18 +347,18 @@ public class MainActivity extends AppCompatActivity {
         editTextReturned.setText("---");
         editTextReturned.setFocusable(false);
 
-        Button btnDel = (Button) popupView.findViewById(R.id.btn_del);
+        Button btnDel = popupView.findViewById(R.id.btn_del);
         btnDel.setEnabled(false);
 
-        Button login = (Button) popupView.findViewById(R.id.btn_done);
+        Button login = popupView.findViewById(R.id.btn_done);
         login.setOnClickListener(new Button.OnClickListener(){
 
             @Override
             public void onClick(View arg0) {
 
                 popupWindow.setContentView(inflater.inflate(R.layout.popup_window, null, false));
-                EditText  editWhom = (EditText) popupView.findViewById(R.id.editTextWhom);
-                EditText  editWhat = (EditText) popupView.findViewById(R.id.editTextWhat);
+                EditText  editWhom = popupView.findViewById(R.id.editTextWhom);
+                EditText  editWhat = popupView.findViewById(R.id.editTextWhat);
 
                 LocalDateTime now = LocalDateTime.now();
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -383,7 +381,7 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
-        Button btnCnl = (Button) popupView.findViewById(R.id.btn_cancel);
+        Button btnCnl = popupView.findViewById(R.id.btn_cancel);
         btnCnl.setOnClickListener(new Button.OnClickListener() {
 
             @Override
@@ -397,7 +395,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void onSwitchChanged(View view) {
-        final SearchView sv = (SearchView) findViewById(R.id.search);
+        final SearchView sv = findViewById(R.id.search);
         doMySearch(sv.getQuery().toString());
 
     }
@@ -408,7 +406,6 @@ public class MainActivity extends AppCompatActivity {
         Point size = new Point();
         disp.getSize(size);
         int intIdWidth = (int) res.getDimension(R.dimen.id_width);
-        int intPadding = (int) res.getDimension(R.dimen.padding);
         int maxWidth = (size.x -  intIdWidth)/ 4;
 
         TextView tv = findViewById(R.id.what);
@@ -419,7 +416,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        final SearchView sv = (SearchView) findViewById(R.id.search);
+        final SearchView sv = findViewById(R.id.search);
 
         sv.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
