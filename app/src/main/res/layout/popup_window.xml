@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/popup_window"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
@@ -18,24 +17,26 @@
             android:layout_width="128dp"
             android:layout_height="48dp"
             android:layout_marginStart="32dp"
-            android:layout_marginLeft="32dp"
             android:layout_marginTop="32dp"
-            android:text="What?"
+            android:text="@string/what_question"
             android:textSize="22sp"
+            android:labelFor="@id/editTextWhat"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+        <!--    android:layout_marginLeft="32dp" -->
 
         <TextView
             android:id="@+id/textView_whom"
             android:layout_width="128dp"
             android:layout_height="48dp"
             android:layout_marginStart="32dp"
-            android:layout_marginLeft="32dp"
             android:layout_marginTop="32dp"
-            android:text="To Whom?"
+            android:text="@string/to_whom_ques"
             android:textSize="22sp"
+            android:labelFor="@id/editTextWhom"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView_what" />
+        <!--    android:layout_marginLeft="32dp" -->
 
         <EditText
             android:id="@+id/editTextWhom"
@@ -48,10 +49,11 @@
             android:layout_marginRight="32dp"
             android:ems="10"
             android:inputType="textPersonName"
-            android:text="To whom"
+            android:text="@string/to_whom"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/textView_whom"
-            app:layout_constraintTop_toBottomOf="@+id/editTextWhat" />
+            app:layout_constraintTop_toBottomOf="@+id/editTextWhat"
+            android:autofillHints="AUTOFILL_HINT_PERSON_NAME_GIVEN" />
 
         <EditText
             android:id="@+id/editTextWhat"
@@ -64,34 +66,36 @@
             android:layout_marginRight="32dp"
             android:ems="10"
             android:inputType="textPersonName"
-            android:text="What"
+            android:text="@string/what"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/textView_what"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:autofillHints="item"/>
 
         <Button
             android:id="@+id/btn_done"
             android:layout_width="88dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp"
             android:layout_marginTop="32dp"
-            android:text="Save"
+            android:text="@string/save"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/btn_cancel"
             app:layout_constraintTop_toBottomOf="@+id/editText_returned" />
+        <!--    android:layout_marginLeft="16dp" -->
 
         <TextView
             android:id="@+id/textView_returned"
             android:layout_width="128dp"
             android:layout_height="48dp"
             android:layout_marginStart="32dp"
-            android:layout_marginLeft="32dp"
             android:layout_marginTop="32dp"
-            android:text="Returned?"
+            android:text="@string/returned_ques"
             android:textSize="22sp"
+            android:labelFor="@id/editText_returned"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView_when" />
+        <!--    android:layout_marginLeft="32dp" -->
 
         <EditText
             android:id="@+id/editText_when"
@@ -114,12 +118,13 @@
             android:layout_width="128dp"
             android:layout_height="48dp"
             android:layout_marginStart="32dp"
-            android:layout_marginLeft="32dp"
             android:layout_marginTop="32dp"
-            android:text="When?"
+            android:text="@string/when_ques"
             android:textSize="22sp"
+            android:labelFor="@id/editText_when"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView_whom" />
+        <!--    android:layout_marginLeft="32dp" -->
 
         <EditText
             android:id="@+id/editText_returned"
@@ -132,6 +137,7 @@
             android:layout_marginRight="32dp"
             android:ems="10"
             android:inputType="date"
+            android:autofillHints="date"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/textView_returned"
             app:layout_constraintTop_toBottomOf="@+id/editText_when" />
@@ -141,22 +147,22 @@
             android:layout_width="88dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
-            android:layout_marginLeft="32dp"
             android:layout_marginTop="32dp"
-            android:text="Delete"
+            android:text="@string/delete"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView_returned" />
+        <!--    android:layout_marginLeft="32dp" -->
 
         <Button
             android:id="@+id/btn_cancel"
             android:layout_width="88dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp"
             android:layout_marginTop="32dp"
-            android:text="Cancel"
+            android:text="@string/cancel"
             app:layout_constraintStart_toEndOf="@+id/btn_del"
             app:layout_constraintTop_toBottomOf="@+id/editText_returned" />
+        <!--    android:layout_marginLeft="16dp" -->
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
