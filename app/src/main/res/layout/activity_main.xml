@@ -86,49 +86,50 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"
-        android:layout_marginRight="24dp"
         android:layout_marginBottom="24dp"
         android:clickable="true"
         android:onClick="onButtonShowPopupWindowClick"
         app:backgroundTint="#009688"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@android:drawable/ic_input_add" />
+        app:srcCompat="@android:drawable/ic_input_add"
+        android:focusable="true" />
+    <!--    android:layout_marginRight="24dp" -->
 
     <Switch
         android:id="@+id/sw_showAll"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="32dp"
-        android:layout_marginRight="32dp"
         android:layout_marginBottom="32dp"
         android:onClick="onSwitchChanged"
         android:text="@string/show_all"
         app:layout_constraintBottom_toTopOf="@+id/table_db"
         app:layout_constraintEnd_toEndOf="parent" />
+    <!--    android:layout_marginRight="32dp" -->
 
     <TextView
         android:id="@+id/tv_ausstand"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
-        android:layout_marginLeft="20dp"
         android:layout_marginTop="21dp"
         android:text="@string/ausstand_0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+    <!--    android:layout_marginRight="20dp" -->
 
     <SearchView
         android:id = "@+id/search"
         android:layout_width="206dp"
         android:layout_height="32dp"
         android:layout_marginStart="32dp"
-        android:layout_marginLeft="32dp"
         android:layout_marginBottom="32dp"
         app:layout_constraintBottom_toTopOf="@+id/table_db"
         app:layout_constraintEnd_toStartOf="@+id/sw_showAll"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
+    <!--    android:layout_marginRight="32dp" -->
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
