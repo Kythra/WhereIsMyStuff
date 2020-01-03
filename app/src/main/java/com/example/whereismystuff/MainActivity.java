@@ -1,14 +1,11 @@
 package com.example.whereismystuff;
 
-import android.app.SearchManager;
 import android.content.ContentValues;
-import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Point;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -22,7 +19,6 @@ import android.widget.Switch;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -85,8 +81,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void calculateLendOutMoney() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        String sortOrder =
-                DatabaseContract.DatabaseEntry.COLUMN_NAME_WHEN + " ASC";
         Cursor cursor = db.query(
                 DatabaseContract.DatabaseEntry.TABLE_NAME,   // The table to query
                 new String[] {DatabaseContract.DatabaseEntry.COLUMN_NAME_WHAT, DatabaseContract.DatabaseEntry.COLUMN_NAME_ISMONEY, DatabaseContract.DatabaseEntry.COLUMN_NAME_CLOSED},           // The array of columns to return (pass null to get all)
@@ -97,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
                 null,                   // don't filter by row groups
                 null               // The sort order
         );
-        Pattern MY_PATTERN = Pattern.compile("\\D*(\\d*)\\.?\\s?(\\d*\\,?\\d*)\\s*[€|EUR|EURO|eur|euro](\\d*)\\.?\\s?(\\d*\\,?\\d*)\\s*.*");
+        Pattern MY_PATTERN = Pattern.compile("\\D*(\\d*)\\.?\\s?(\\d*,?\\d*)\\s*(?:€|EUR|EURO|eur|euro)(\\d*)\\.?\\s?(\\d*,?\\d*)\\s*.*");
         float moneyVal = 0;
         String foundValue = "";
         while(cursor.moveToNext()) {
