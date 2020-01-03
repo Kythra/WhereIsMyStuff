@@ -30,25 +30,25 @@
                 android:id="@+id/what"
                 android:layout_column="1"
                 android:padding="6dip"
-                android:text="What" />
+                android:text="@string/what" />
 
             <TextView
                 android:id="@+id/towhom"
                 android:layout_column="2"
                 android:padding="6dip"
-                android:text="To Whom" />
+                android:text="@string/to_whom" />
 
             <TextView
                 android:id="@+id/when"
                 android:layout_column="3"
                 android:padding="6dip"
-                android:text="When" />
+                android:text="@string/when" />
 
             <TextView
                 android:id="@+id/closed"
                 android:layout_column="4"
                 android:padding="6dip"
-                android:text="Returned" />
+                android:text="@string/returned" />
 
 
 
@@ -103,7 +103,7 @@
         android:layout_marginRight="32dp"
         android:layout_marginBottom="32dp"
         android:onClick="onSwitchChanged"
-        android:text="Show all"
+        android:text="@string/show_all"
         app:layout_constraintBottom_toTopOf="@+id/table_db"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -114,7 +114,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="21dp"
-        android:text="Ausstand: 0"
+        android:text="@string/ausstand_0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

@@ -1,6 +1,12 @@
 <resources>
     <string name="app_name">Where is my stuff</string>
     <string name="id_name">ID</string>
+    <string name="what">What</string>
+    <string name="to_whom">To Whom</string>
+    <string name="when">When</string>
+    <string name="returned">Returned</string>
+    <string name="ausstand_0">Ausstand: 0</string>
+    <string name="show_all">Show all</string>
     <string-array
         name="money">
         <item>€</item>
