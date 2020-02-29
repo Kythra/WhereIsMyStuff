@@ -1,5 +1,7 @@
 package com.example.whereismystuff;
 
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -11,6 +13,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -21,14 +24,18 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity {
     DatabaseHelper dbHelper;
+    String dateFromDatePickerForWhen = "";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -242,6 +249,9 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });*/
 
+
+
+
                     Button login = popupView.findViewById(R.id.btn_done);
                     login.setOnClickListener(new Button.OnClickListener(){
 
@@ -312,6 +322,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+
+
     public void onButtonShowPopupWindowClick(View view) {
 
         // inflate the layout of the popup window
@@ -336,6 +348,8 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         }); */
+
+
 
         EditText editTextwhen = popupView.findViewById(R.id.editText_when);
         LocalDateTime now = LocalDateTime.now();
@@ -376,6 +390,7 @@ public class MainActivity extends AppCompatActivity {
         //        addToTable(values);
                 initResultTable();
 
+
                 popupWindow.dismiss();
             }
 
@@ -389,6 +404,8 @@ public class MainActivity extends AppCompatActivity {
                 popupWindow.dismiss();
             }
         });
+
+
     }
 
 
@@ -436,4 +453,49 @@ public class MainActivity extends AppCompatActivity {
 
         });
     }
+
+    public static class DatePickerFragment extends DialogFragment
+            implements DatePickerDialog.OnDateSetListener {
+        public String dateFromDatePicker;
+        EditText editText;
+
+        public DatePickerFragment(EditText editText){
+            super();
+            this.editText = editText;
+        }
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the current date as the default date in the picker
+            final Calendar c = Calendar.getInstance();
+            int year = c.get(Calendar.YEAR);
+            int month = c.get(Calendar.MONTH);
+            int day = c.get(Calendar.DAY_OF_MONTH);
+
+            // Create a new instance of DatePickerDialog and return it
+            return new DatePickerDialog(getActivity(), this, year, month, day);
+        }
+
+        public void onDateSet(DatePicker view, int year, int month, int day) {
+            // Do something with the date chosen by the user
+            month++; //for some reason month count starts with zero
+            String dateFormatted = year + "-";
+            if (month<10) dateFormatted += "0";
+            dateFormatted += month + "-";
+            if (day<10) dateFormatted += "0";
+            dateFormatted += day;
+            editText.setText(dateFormatted);
+        }
+    }
+
+    public void showDatePickerDialog(View view) {
+        EditText editText = (EditText) view;
+
+        DatePickerFragment newFragment = new DatePickerFragment(editText);
+        newFragment.show(getSupportFragmentManager(), "datePicker");
+        //editText.setText("a");
+        //editText.setText(newFragment.dateFromDatePicker);
+    }
+
+
 }

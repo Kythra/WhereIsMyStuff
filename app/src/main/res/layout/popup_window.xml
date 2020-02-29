@@ -108,9 +108,11 @@
             android:autofillHints=""
             android:ems="10"
             android:inputType="date"
+            android:focusable="false"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/textView_when"
-            app:layout_constraintTop_toBottomOf="@+id/editTextWhom" />
+            app:layout_constraintTop_toBottomOf="@+id/editTextWhom"
+            android:onClick="showDatePickerDialog"/>
 
         <TextView
             android:id="@+id/textView_when"
@@ -139,7 +141,9 @@
             android:autofillHints="date"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/textView_returned"
-            app:layout_constraintTop_toBottomOf="@+id/editText_when" />
+            app:layout_constraintTop_toBottomOf="@+id/editText_when"
+            android:focusable="false"
+            android:onClick="showDatePickerDialog"/>
 
         <Button
             android:id="@+id/btn_del"
